@@ -1,6 +1,6 @@
 <?php
 
-namespace Mabrouk\Mediable;
+namespace Otas\Mediable;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -64,7 +64,7 @@ class MediableServiceProvider extends ServiceProvider
     protected function routeConfiguration(): array
     {
         return [
-            'namespace' => 'Mabrouk\Mediable\Http\Controllers',
+            'namespace' => 'Otas\Mediable\Http\Controllers',
             'prefix' => config('mediable.prefix'),
             'middleware' => config('mediable.middleware'),
         ];

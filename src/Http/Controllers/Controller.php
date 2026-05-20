@@ -1,6 +1,6 @@
 <?php
 
-namespace Mabrouk\Mediable\Http\Controllers;
+namespace Otas\Mediable\Http\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;

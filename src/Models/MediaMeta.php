@@ -1,9 +1,9 @@
 <?php
 
-namespace Mabrouk\Mediable\Models;
+namespace Otas\Mediable\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Mabrouk\Translatable\Traits\Translatable;
+use Otas\Translatable\Traits\Translatable;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,7 +43,7 @@ class MediaMeta extends Model
      */
     protected static function newFactory(): Factory
     {
-        return \Mabrouk\Mediable\Factories\MediaMetaFactory::new();
+        return \Otas\Mediable\Factories\MediaMetaFactory::new();
     }
 
     public function remove(): bool

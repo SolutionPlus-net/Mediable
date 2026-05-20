@@ -1,10 +1,10 @@
 <?php
 
-namespace Mabrouk\Mediable\Http\Controllers;
+namespace Otas\Mediable\Http\Controllers;
 
-use Mabrouk\Mediable\Models\Media;
-use Mabrouk\Mediable\Http\Resources\MediaResource;
-use Mabrouk\Mediable\Http\Requests\MediaUpdateRequest;
+use Otas\Mediable\Models\Media;
+use Otas\Mediable\Http\Resources\MediaResource;
+use Otas\Mediable\Http\Requests\MediaUpdateRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MediaController extends Controller
@@ -29,7 +29,7 @@ class MediaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Mabrouk\Mediable\Models\Media  $medium
+     * @param  Otas\Mediable\Models\Media  $medium
      * @return \Illuminate\Http\Response
      */
     public function destroy($medium)

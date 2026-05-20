@@ -1,6 +1,6 @@
 <?php
 
-namespace Mabrouk\Mediable\Models;
+namespace Otas\Mediable\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

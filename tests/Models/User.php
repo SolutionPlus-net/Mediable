@@ -1,9 +1,9 @@
 <?php
 
-namespace Mabrouk\Mediable\Tests\Models;
+namespace Otas\Mediable\Tests\Models;
 
 use Illuminate\Auth\Authenticatable;
-use Mabrouk\Mediable\Traits\Mediable;
+use Otas\Mediable\Traits\Mediable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;

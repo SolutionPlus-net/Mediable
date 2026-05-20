@@ -1,14 +1,14 @@
 <?php
 
-namespace Mabrouk\Mediable\Traits;
+namespace Otas\Mediable\Traits;
 
 use Carbon\Carbon;
 use ReflectionClass;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Mabrouk\Mediable\Models\Media;
-use Mabrouk\Mediable\Models\MediaMeta;
+use Otas\Mediable\Models\Media;
+use Otas\Mediable\Models\MediaMeta;
 
 Trait Mediable
 {

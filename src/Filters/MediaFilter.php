@@ -1,8 +1,8 @@
 <?php
 
-namespace Mabrouk\Mediable\Filters;
+namespace Otas\Mediable\Filters;
 
-use Mabrouk\Filterable\Helpers\QueryFilter;
+use Otas\Filterable\Helpers\QueryFilter;
 
 class MediaFilter extends QueryFilter
 {

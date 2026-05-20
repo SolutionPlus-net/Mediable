@@ -1,8 +1,8 @@
 <?php
 
-namespace Mabrouk\Mediable\Factories;
+namespace Otas\Mediable\Factories;
 
-use Mabrouk\Mediable\Models\TranslatedMedia;
+use Otas\Mediable\Models\TranslatedMedia;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

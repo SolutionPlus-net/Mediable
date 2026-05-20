@@ -1,6 +1,6 @@
 <?php
 
-namespace Mabrouk\Mediable\Traits;
+namespace Otas\Mediable\Traits;
 
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 

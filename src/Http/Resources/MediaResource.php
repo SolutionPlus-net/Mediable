@@ -1,6 +1,6 @@
 <?php
 
-namespace Mabrouk\Mediable\Http\Resources;
+namespace Otas\Mediable\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 

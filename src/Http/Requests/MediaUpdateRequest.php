@@ -1,9 +1,9 @@
 <?php
 
-namespace Mabrouk\Mediable\Http\Requests;
+namespace Otas\Mediable\Http\Requests;
 
 use Illuminate\Support\Str;
-use Mabrouk\Mediable\Models\Media;
+use Otas\Mediable\Models\Media;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 

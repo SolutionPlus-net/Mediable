@@ -1,6 +1,6 @@
 {
-    "name": "mabrouk/mediable",
-    "description": "a laravel package to handle dealing with storing, updating or deleteing files",
+    "name": "otas/mediable",
+    "description": "a laravel package to handle dealing with storing, updating or deleting files",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -12,8 +12,8 @@
     "minimum-stability": "stable",
     "require": {
         "laravel/framework": ">=8.0",
-        "mabrouk/translatable": ">=1.0",
-        "mabrouk/filterable": ">=1.0"
+        "otas/translatable": ">=1.0",
+        "otas/filterable": ">=1.0"
     },
     "require-dev": {
         "orchestra/testbench": "^7.0@dev"
@@ -21,14 +21,14 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Mabrouk\\Mediable\\MediableServiceProvider"
+                "Otas\\Mediable\\MediableServiceProvider"
             ]
         }
     },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Mabrouk\\Mediable\\": "src/"
+            "Otas\\Mediable\\": "src/"
         }
     },
     "autoload-dev": {

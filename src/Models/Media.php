@@ -1,11 +1,11 @@
 <?php
 
-namespace Mabrouk\Mediable\Models;
+namespace Otas\Mediable\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Mabrouk\Mediable\Factories\MediaFactory;
-use Mabrouk\Mediable\Traits\MediaModelsTrait;
+use Otas\Mediable\Factories\MediaFactory;
+use Otas\Mediable\Traits\MediaModelsTrait;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 

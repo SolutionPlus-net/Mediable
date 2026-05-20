@@ -2,7 +2,7 @@
 
 namespace JohnDoe\BlogPackage\Tests;
 
-use Mabrouk\Mediable\MediableServiceProvider;
+use Otas\Mediable\MediableServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Mabrouk\Mediable\Traits;
+namespace Otas\Mediable\Traits;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Mabrouk\Mediable\Models\TranslatedMedia;
+use Otas\Mediable\Models\TranslatedMedia;
 
 Trait HasTranslatedMedia
 {

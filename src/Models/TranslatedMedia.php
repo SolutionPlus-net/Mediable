@@ -1,12 +1,12 @@
 <?php
 
-namespace Mabrouk\Mediable\Models;
+namespace Otas\Mediable\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Mabrouk\Mediable\Traits\MediaModelsTrait;
-use Mabrouk\Translatable\Traits\Translatable;
-use Mabrouk\Mediable\Factories\TranslatedMediaFactory;
+use Otas\Mediable\Traits\MediaModelsTrait;
+use Otas\Translatable\Traits\Translatable;
+use Otas\Mediable\Factories\TranslatedMediaFactory;
 
 class TranslatedMedia extends Model
 {
