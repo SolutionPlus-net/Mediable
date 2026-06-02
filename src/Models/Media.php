@@ -52,8 +52,7 @@ class Media extends Model
 
     public function scopeOfGroup($query, $group = '')
     {
-        // return $group != '' ? $query->where('media_group_name', $group) : $query;
-        return $query; // ! wip: till we add the full functionality
+        return $query; 
     }
 
     ## Other Methods
