@@ -2,10 +2,11 @@
 
 namespace Otas\Mediable\Traits;
 
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Otas\Mediable\Models\Media;
 use Otas\Mediable\Models\MediaMeta;
 use ReflectionClass;
@@ -181,6 +182,8 @@ Trait Mediable
         if ($isMain) {
             $this->normalizePreviousMainMedia();
         }
+        
+        $oldPath = $singleMedia->storagePath;
 
         $singleMedia->update([
             'path' => $handledFile['path'],
@@ -191,8 +194,8 @@ Trait Mediable
             'size' => $handledFile['size'],
             'is_main' => $isMain,            
         ]);
-
-        $singleMedia->remove(removeFileWithoutObject: true);        
+        
+        Storage::delete($oldPath);        
     }
 
     public function deleteMedia(Media $singleMedia): void
