@@ -72,7 +72,7 @@ Trait HasTranslatedMedia
         bool $isMain = false,
         ?string $title = null,
         ?string $description = null,
-        int $priority = 9999,
+        ?int $priority = null,
     ): void {
         if (!$singleMedia) {
             $this->addMedia(
@@ -82,7 +82,7 @@ Trait HasTranslatedMedia
                 isMain: $isMain,
                 title: $title,
                 description: $description,
-                priority: $priority,
+                priority: $priority ?? 9999,
             );
 
             return;
@@ -94,7 +94,6 @@ Trait HasTranslatedMedia
         $singleMedia->update([
             'path' => $handledFile['path'],
             'extension' => $handledFile['extension'],
-            'is_main' => $isMain,
             'priority' => $priority,
             'size' => $handledFile['size'],
             'updated_at' => Carbon::now(),

@@ -54,8 +54,9 @@ Trait Mediable
 
     public function getMainMediaAttribute()
     {
-        $main = $this->media()->where('is_main', true)->first();
-        return $main ? $main : $this->media()->first();
+        $collection = $this->media;
+
+        return $collection->firstWhere('is_main', true) ?? $collection->first();
     }
 
     public function getIsMainMediaAttribute()
@@ -158,7 +159,7 @@ Trait Mediable
         bool $isMain = false,        
         ?string $title = null,
         ?string $description = null,
-        int $priority = 9999,
+        ?int $priority = null,
     ): void {
 
         if (!$singleMedia) {
@@ -169,14 +170,13 @@ Trait Mediable
                 isMain: $isMain,
                 title: $title,
                 description: $description,
-                priority: $priority,
+                priority: $priority ?? 9999,
             );
 
             return;
         }
 
         $handledFile = $this->storeRequestFile(requestFile: $requestFile, type: $type, disk: $disk);
-        $singleMedia->remove(removeFileWithoutObject: true);
 
         $singleMedia->update([
             'path' => $handledFile['path'],
@@ -186,12 +186,13 @@ Trait Mediable
             'priority' => $priority ?? $singleMedia->priority,
             'size' => $handledFile['size'],
         ]);
+
+        $singleMedia->remove(removeFileWithoutObject: true);        
     }
 
     public function deleteMedia(Media $singleMedia): void
     {
         $singleMedia->remove();
-        $this->touch();
     }
 
     public function deleteAllMedia(): void
@@ -217,16 +218,12 @@ Trait Mediable
     
     public function newMediaDirectory(string $type): string
     {
-        switch ($type) {
-            case 'photo':
-                return $this->photosDirectory;
-            case 'file':
-                return $this->filesDirectory;
-            case 'video':
-                return $this->videosDirectory;
-            default:
-                return $this->photosDirectory;
-        }
+        return match ($type) {
+            'photo' => $this->photosDirectory,
+            'file' => $this->filesDirectory,
+            'video' => $this->videosDirectory,
+            default => $this->photosDirectory,
+        };
     }
 
     private function storeRequestFile(UploadedFile $requestFile, string $type, ?string $disk = null): array
