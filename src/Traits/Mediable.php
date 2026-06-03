@@ -177,6 +177,10 @@ Trait Mediable
         }
 
         $handledFile = $this->storeRequestFile(requestFile: $requestFile, type: $type, disk: $disk);
+        
+        if ($isMain) {
+            $this->normalizePreviousMainMedia();
+        }
 
         $singleMedia->update([
             'path' => $handledFile['path'],
@@ -185,6 +189,7 @@ Trait Mediable
             'description' => $description ?? $singleMedia->description,
             'priority' => $priority ?? $singleMedia->priority,
             'size' => $handledFile['size'],
+            'is_main' => $isMain,            
         ]);
 
         $singleMedia->remove(removeFileWithoutObject: true);        

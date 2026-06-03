@@ -91,12 +91,18 @@ Trait HasTranslatedMedia
         $handledFile = $this->storeRequestFile(requestFile: $requestFile, type: $type, disk: $disk);
         $singleMedia->remove(removeFileWithoutObject: true);
 
+        if ($isMain) {
+            $this->normalizePreviousMainMedia();
+        }
+        
+        
         $singleMedia->update([
             'path' => $handledFile['path'],
             'extension' => $handledFile['extension'],
             'priority' => $priority,
             'size' => $handledFile['size'],
             'updated_at' => Carbon::now(),
+            'is_main' => $isMain,               
         ]);
 
         request()->dontTranslate = true;
