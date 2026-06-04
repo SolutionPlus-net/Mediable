@@ -10,25 +10,25 @@ use Otas\Mediable\Models\Media;
 use Otas\Mediable\Models\MediaMeta;
 use ReflectionClass;
 
-Trait Mediable
+trait Mediable
 {
     ## Relations
 
-	public function media(): MorphMany
+    public function media(): MorphMany
     {
         return $this->morphMany(Media::class, 'mediable')->orderBy('priority', 'asc');
     }
 
-	public function singleMedia(): MorphOne
+    public function singleMedia(): MorphOne
     {
         return $this->morphOne(Media::class, 'mediable');
     }
 
-	public function nonMainMedia()
+    public function mainMedia(): MorphOne
     {
-        return $this->media()->where('is_main', false);
+        return $this->morphOne(Media::class, 'mediable')->where('is_main', true);
     }
-    
+
     ## Getters & Setters
 
     public function getMediaDirectoryAttribute($value)
@@ -54,9 +54,18 @@ Trait Mediable
 
     public function getMainMediaAttribute()
     {
+        if ($this->relationLoaded('mainMedia')) {
+            return $this->getRelation('mainMedia');
+        }
+
         $collection = $this->media;
 
         return $collection->firstWhere('is_main', true) ?? $collection->first();
+    }
+
+    public function getNonMainMediaAttribute()
+    {
+        return $this->media->where('is_main', false);
     }
 
     public function getIsMainMediaAttribute()
@@ -138,7 +147,7 @@ Trait Mediable
         if ($isMain) {
             $this->normalizePreviousMainMedia();
         }
-        
+
         $this->media()->create([
             'path' => $handledFile['path'],
             'type' => $type,
@@ -150,13 +159,13 @@ Trait Mediable
             'size' => $handledFile['size'],
         ]);
     }
-    
+
     public function editMedia(
         UploadedFile $requestFile,
         ?Media $singleMedia,
         string $type = 'photo',
         ?string $disk = null,
-        bool $isMain = false,        
+        bool $isMain = false,
         ?string $title = null,
         ?string $description = null,
         ?int $priority = null,
@@ -187,7 +196,7 @@ Trait Mediable
             'size' => $handledFile['size'],
         ]);
 
-        $singleMedia->remove(removeFileWithoutObject: true);        
+        $singleMedia->remove(removeFileWithoutObject: true);
     }
 
     public function deleteMedia(Media $singleMedia): void
@@ -215,7 +224,7 @@ Trait Mediable
             ]);
         }
     }
-    
+
     public function newMediaDirectory(string $type): string
     {
         return match ($type) {
@@ -232,15 +241,15 @@ Trait Mediable
         $name = now()->timestamp . '-' . random_int(100000, 999999);
 
         $disk = $disk ?? config('filesystems.default');
-        
+
         $directory = $this->newMediaDirectory(type: $type);
 
         $path = $requestFile->storeAs($directory, "{$name}.{$extension}", $disk);
-        
+
         if (!$path) {
             throw new \RuntimeException('Failed to store media file');
         }
-        
+
         return [
             'path' => $path,
             'size' => $requestFile->getSize(),
