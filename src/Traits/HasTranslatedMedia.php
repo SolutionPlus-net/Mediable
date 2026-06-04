@@ -6,9 +6,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Otas\Mediable\Models\TranslatedMedia;
 
-Trait HasTranslatedMedia
+trait HasTranslatedMedia
 {
     use Mediable;
 
@@ -89,7 +90,12 @@ Trait HasTranslatedMedia
         }
 
         $handledFile = $this->storeRequestFile(requestFile: $requestFile, type: $type, disk: $disk);
-        $singleMedia->remove(removeFileWithoutObject: true);
+
+        if ($isMain) {
+            $this->normalizePreviousMainMedia();
+        }
+        
+        $oldPath = $singleMedia->storagePath;
 
         $singleMedia->update([
             'path' => $handledFile['path'],
@@ -97,8 +103,11 @@ Trait HasTranslatedMedia
             'priority' => $priority,
             'size' => $handledFile['size'],
             'updated_at' => Carbon::now(),
+            'is_main' => $isMain,               
         ]);
 
+        Storage::delete($oldPath);   
+                
         request()->dontTranslate = true;
         $singleMedia->translate([
             'title' => $title ?? $singleMedia->title,
