@@ -5,6 +5,7 @@ namespace Otas\Mediable\Traits;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Http\UploadedFile;
 use Otas\Mediable\Models\TranslatedMedia;
 
 Trait HasTranslatedMedia
@@ -13,55 +14,14 @@ Trait HasTranslatedMedia
 
     ## Relations
 
-	public function media(?string $type = null, ?string $title = null, ?string $relatedObjectMediaGroupName = null): MorphMany
+	public function media(): MorphMany
     {
-        return $this->morphMany(TranslatedMedia::class, 'mediable')
-            ->orderBy('translated_media.priority', 'asc')
-            ->when($type, function ($query) use ($type) {
-                $query->ofType('type', $type);
-            })->when($relatedObjectMediaGroupName, function ($query) use ($relatedObjectMediaGroupName) {
-                $query->ofGroup('media_group_name', $relatedObjectMediaGroupName);
-            })->when($title, function ($query1) use ($title) {
-                $query1->byTitle($title);
-            })->select([
-                'id',
-                'mediable_type',
-                'mediable_id',
-                'type',
-                'extension',
-                'path',
-                // 'media_group_name',
-                'title',
-                'description',
-                'priority',
-                'size',
-                'is_main',
-                'created_at',
-                'updated_at',
-            ]);
+        return $this->morphMany(TranslatedMedia::class, 'mediable')->orderBy('priority', 'asc');
     }
 
-	public function singleMedia(?string $type = null): MorphOne
+	public function singleMedia(): MorphOne
     {
-        return $this->morphOne(TranslatedMedia::class, 'mediable')
-            ->when($type, function ($query) use ($type) {
-                $query->where('type', $type);
-            })->select([
-                'id',
-                'mediable_type',
-                'mediable_id',
-                'type',
-                'extension',
-                'path',
-                // 'media_group_name',
-                'title',
-                'description',
-                'priority',
-                'size',
-                'is_main',
-                'created_at',
-                'updated_at',
-            ]);
+        return $this->morphOne(TranslatedMedia::class, 'mediable');
     }
 
     ## Getters & Setters
@@ -70,56 +30,80 @@ Trait HasTranslatedMedia
 
     ## Other Methods
 
-	public function addMedia(string $type, string $path, ?string $title = null, ?string $description = null, bool $isMain = false, string $extension = '', string $mediaGroupName = '', int $priority = 9999, ?int $fileSize = null)
-    {
-        ! $isMain ? : $this->normalizePreviousMainMedia();
+    public function addMedia(
+        UploadedFile $requestFile,
+        string $type = 'photo',
+        ?string $disk = null,
+        bool $isMain = false,
+        ?string $title = null,
+        ?string $description = null,
+        int $priority = 9999,
+    ) {
+        $handledFile = $this->storeRequestFile(requestFile: $requestFile, type: $type, disk: $disk);
+
+        if ($isMain) {
+            $this->normalizePreviousMainMedia();
+        }
 
         $media = $this->media()->create([
-            'path' => $path,
+            'path' => $handledFile['path'],
             'type' => $type,
-            'is_main' => $isMain ? true : false,
-            'extension' => $extension,
-            // 'media_group_name' => $mediaGroupName,
+            'extension' => $handledFile['extension'],
+            'is_main' => $isMain,
             'priority' => $priority,
-            'size' => $fileSize,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'size' => $handledFile['size'],
         ]);
+
         request()->dontTranslate = true;
         $media->translate([
             'title' => $title,
             'description' => $description,
         ], (config('translatable.fallback_locale') ?? config('app.fallback_locale')));
-        $this->touch;
         request()->dontTranslate = false;
+
         return $this;
     }
 
-    // ! should handle translation here
-	public function editMedia(TranslatedMedia $singleMedia, ?string $path = null, ?string $title = null, ?string $description = null, bool $isMain = false, string $extension = '', string $mediaGroupName = '', int $priority = 9999, ?int $fileSize = null)
-    {
-        $oldPath = $path == null ?: $singleMedia->path;
-        $singleMedia->is_main || (!$singleMedia->is_main && !$isMain) ? : $this->normalizePreviousMainMedia();
+    public function editMedia(
+        UploadedFile $requestFile,
+        ?TranslatedMedia $singleMedia,
+        string $type = 'photo',
+        ?string $disk = null,
+        bool $isMain = false,
+        ?string $title = null,
+        ?string $description = null,
+        ?int $priority = null,
+    ): void {
+        if (!$singleMedia) {
+            $this->addMedia(
+                requestFile: $requestFile,
+                type: $type,
+                disk: $disk,
+                isMain: $isMain,
+                title: $title,
+                description: $description,
+                priority: $priority ?? 9999,
+            );
 
-        ! $oldPath ?: $singleMedia->remove(true);
+            return;
+        }
+
+        $handledFile = $this->storeRequestFile(requestFile: $requestFile, type: $type, disk: $disk);
+        $singleMedia->remove(removeFileWithoutObject: true);
+
         $singleMedia->update([
-            'path' => $path ?? $singleMedia->path,
-            'title' => $title ?? $singleMedia->title,
-            'description' => $description ?? $singleMedia->description,
-            'is_main' => $isMain,
-            'extension' => $extension,
-            // 'media_group_name' => $mediaGroupName ?? $singleMedia->media_group_name,
-            'priority' => $priority != $singleMedia->priority ? $priority : $singleMedia->priority,
-            'size' => $fileSize,
+            'path' => $handledFile['path'],
+            'extension' => $handledFile['extension'],
+            'priority' => $priority,
+            'size' => $handledFile['size'],
             'updated_at' => Carbon::now(),
         ]);
 
-        $this->touch;
+        request()->dontTranslate = true;
+        $singleMedia->translate([
+            'title' => $title ?? $singleMedia->title,
+            'description' => $description ?? $singleMedia->description,
+        ], (config('translatable.fallback_locale') ?? config('app.fallback_locale')));
+        request()->dontTranslate = false;
     }
-
-    // public function replaceMedia(TranslatedMedia $singleMedia, string $path, string $title = null, string $description = null, bool $isMain = false, string $mediaGroupName = '', int $priority = 9999, int $fileSize = null)
-    // {
-    //     $this->editMedia(singleMedia: $singleMedia, path: $path, title: $title, description: $description, isMain: $isMain, mediaGroupName: $mediaGroupName,  priority: $priority, fileSize: $fileSize);
-    //     $this->touch;
-    // }
 }
